@@ -50,6 +50,7 @@ public class MoviesItemCRUD {
         GetItemSpec spec = new GetItemSpec().withPrimaryKey(YEAR, year, TITLE, title);
 
         Item outcome = table.getItem(spec);
+
         assertNotNull(outcome);
         assertEquals(year, outcome.getInt(YEAR));
         assertEquals(title, outcome.getString(TITLE));
@@ -74,27 +75,26 @@ public class MoviesItemCRUD {
 
         UpdateItemOutcome updateOutcome = table.updateItem(updateSpec);
 
-        System.out.println("UpdateItem succeeded: " + updateOutcome.getUpdateItemResult());
-
         // assert validate
-        GetItemSpec readSpec = new GetItemSpec().withPrimaryKey(YEAR, year, TITLE, title);
-        Item readOutcome = table.getItem(readSpec);
+        Item readOutcome = table.getItem(new GetItemSpec().withPrimaryKey(YEAR, year, TITLE, title));
+
         assertEquals(infoMap.get("plot"), readOutcome.getMap("info").get("plot"));
         assertEquals(infoMap.get("rating").toString(), readOutcome.getMap("info").get("rating").toString());
         assertEquals(infoMap.get("actors"), readOutcome.getMap("info").get("actors"));
+
+        System.out.println("UpdateItem succeeded: " + updateOutcome.getUpdateItemResult());
     }
 
     private static void deleteItem() {
         System.out.println("Delete item...");
 
-        DeleteItemSpec deleteSpec = new DeleteItemSpec()
-                .withPrimaryKey(YEAR, year, TITLE, title);
+        DeleteItemSpec deleteSpec = new DeleteItemSpec().withPrimaryKey(YEAR, year, TITLE, title);
 
         DeleteItemOutcome deleteOutcome = table.deleteItem(deleteSpec);
 
         // assert validate
-        GetItemSpec readSpec = new GetItemSpec().withPrimaryKey(YEAR, year, TITLE, title);
-        Item readOutcome = table.getItem(readSpec);
+        Item readOutcome = table.getItem(new GetItemSpec().withPrimaryKey(YEAR, year, TITLE, title));
+
         assertNull(readOutcome);
 
         System.out.println("DeleteItem succeeded: " + deleteOutcome.getDeleteItemResult());
